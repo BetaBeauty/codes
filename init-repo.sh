@@ -28,17 +28,39 @@ if [[ -e ${REPO} ]]; then
   exit
 fi
 
-mkdir -p ${REPO}
+LOCAL="repo/${REPO}"
+REMOTE="git@${GIT_WEBSITE}:${GIT_USER}/${REPO}.git"
+echo "Remote Git: ${REMOTE}"
 
-cd ${REPO}
+mkdir -p ${LOCAL}
+cd ${LOCAL}
+
+cat > Makefile <<END_OF_DEFINE
+PROJECTS := $(dir $(wildcard */))
+
+.PHONY: test $(PROJECTS)
+
+test: $(PROJECTS)
+
+$(PROJECTS):
+	@echo "Making test for $@"
+	make -C $@
+	@echo ""
+
+# override core makefile
+core/:
+	@echo "Pass project core"
+END_OF_DEFINE
 
 cp -r ${CUR_DIR}/${TEMPLATE}/. .
 git init
 git add .
 git commit -am "initalize"
 
-REMOTE="git@${GIT_WEBSITE}:${GIT_USER}/${REPO}.git"
-echo "Remote Git: ${REMOTE}"
+MOD="git@${GIT_WEBSITE}:${GIT_USER}/code_core.git"
+echo "Register submodule: ${MOD}"
+git submodule add ${MOD} core
+
 git remote add origin ${REMOTE}
 git push --set-upstream origin master
 
