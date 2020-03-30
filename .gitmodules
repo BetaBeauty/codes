@@ -1,0 +1,3 @@
+[submodule "mysub"]
+	path = mysub
+	url = ./repo/utils/
