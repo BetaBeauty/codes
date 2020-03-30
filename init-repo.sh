@@ -36,15 +36,15 @@ mkdir -p ${LOCAL}
 cd ${LOCAL}
 
 cat > Makefile <<END_OF_DEFINE
-PROJECTS := $(dir $(wildcard */))
+PROJECTS := \$(dir \$(wildcard */))
 
-.PHONY: test $(PROJECTS)
+.PHONY: test \$(PROJECTS)
 
-test: $(PROJECTS)
+test: \$(PROJECTS)
 
-$(PROJECTS):
-	@echo "Making test for $@"
-	make -C $@
+\$(PROJECTS):
+	@echo "Making test for \$@"
+	make -C \$@
 	@echo ""
 
 # override core makefile
@@ -55,13 +55,15 @@ END_OF_DEFINE
 cp -r ${CUR_DIR}/${TEMPLATE}/. .
 git init
 git add .
-git commit -am "initalize"
 
 MOD="git@${GIT_WEBSITE}:${GIT_USER}/code_core.git"
 echo "Register submodule: ${MOD}"
 git submodule add ${MOD} core
+git commit -am "initalize"
 
 git remote add origin ${REMOTE}
+git branch --set-upstream-to=origin/master master
+git pull
 git push --set-upstream origin master
 
 cd ${CUR_DIR}
