@@ -32,7 +32,7 @@ COMMON_FLAGS = [
     '-I/usr/lib/',
     '-I/usr/include/',
     '-std=c++11',
-    '-I%s/include' % DirectoryOfThisScript(),
+    '-I%s/core/include' % DirectoryOfThisScript(),
 ]
 GCC_BIN(COMMON_FLAGS, 'g++')
 
